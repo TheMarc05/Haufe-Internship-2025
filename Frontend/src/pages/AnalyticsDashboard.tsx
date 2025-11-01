@@ -55,6 +55,79 @@ export const AnalyticsDashboard = () => {
           <StatsCards stats={dashboardStats} />
         </div>
 
+        {/* Token & Performance Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl shadow-md p-6 border border-purple-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  className="w-6 h-6 mr-2 text-purple-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                Token Usage
+              </h3>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <p className="text-sm text-gray-600">Total Tokens</p>
+                <p className="text-3xl font-bold text-purple-600">
+                  {dashboardStats.totalTokens.toLocaleString()}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Average per File</p>
+                <p className="text-xl font-semibold text-gray-700">
+                  {dashboardStats.avgTokensPerFile.toLocaleString()} tokens
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-md p-6 border border-green-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  className="w-6 h-6 mr-2 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                Performance
+              </h3>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <p className="text-sm text-gray-600">Total Processing Time</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {(dashboardStats.totalProcessingTime / 1000).toFixed(1)}s
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Average per Analysis</p>
+                <p className="text-xl font-semibold text-gray-700">
+                  {(dashboardStats.avgProcessingTime / 1000).toFixed(1)}s
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Top Files */}
         <div className="mb-8">
           <TopFilesTable files={dashboardStats.topProblematicFiles} />

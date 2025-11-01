@@ -84,6 +84,10 @@ export interface DashboardStats {
   highIssues: number;
   mediumIssues: number;
   lowIssues: number;
+  totalTokens: number;
+  avgTokensPerFile: number;
+  totalProcessingTime: number;
+  avgProcessingTime: number;
   topProblematicFiles: Array<{
     filename: string;
     language: string;

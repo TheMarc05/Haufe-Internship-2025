@@ -20,6 +20,8 @@ export interface AnalysisSummary {
 export interface AnalysisMetadata {
   model: string;
   tokensUsed?: number;
+  promptTokens?: number;
+  responseTokens?: number;
   processingTime: number;
   language: string;
 }

@@ -72,6 +72,9 @@ Provide actionable, specific feedback. Include line numbers. Be concise but thor
 
       const prompt = this.buildPrompt(code, language, filename);
 
+      const promptTokens = Math.ceil(prompt.length / 4);
+      console.log(`Sending request (~${promptTokens} tokens)...`);
+
       const response = await axios.post<OllamaResponse>(
         `${this.ollamaBaseUrl}/api/generate`,
         {
@@ -81,23 +84,24 @@ Provide actionable, specific feedback. Include line numbers. Be concise but thor
           options: {
             temperature: 0.3,
             top_p: 0.9,
-            num_predict: 4000, // ✅ Mărit pentru analize mai detaliate
+            num_predict: 4000,
           },
         },
         {
-          timeout: 600000, // ✅ 10 minute pentru proiecte mari
+          timeout: 600000,
         }
       );
 
       const rawResponse = response.data.response;
-      console.log(`AI response received (${rawResponse.length} chars)`);
+      const responseTokens = Math.ceil(rawResponse.length / 4);
+      const totalTokens = promptTokens + responseTokens;
 
-      // Parse the AI response
+      console.log(
+        `AI response received (${rawResponse.length} chars, ~${totalTokens} tokens)`
+      );
+
       const parsedData = this.parseAIResponse(rawResponse);
-
-      // Calculate a summary of the issues
       const summary = this.calculateSummary(parsedData.issues);
-
       const processingTime = Date.now() - startTime;
 
       return {
@@ -107,6 +111,9 @@ Provide actionable, specific feedback. Include line numbers. Be concise but thor
           model: this.model,
           processingTime,
           language,
+          tokensUsed: totalTokens,
+          promptTokens,
+          responseTokens,
         },
       };
     } catch (error: any) {

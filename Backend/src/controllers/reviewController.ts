@@ -130,7 +130,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       },
     });
 
-    // Get all reviews with summaries
+    // Get all reviews with summaries and metadata
     const reviews = await prisma.review.findMany({
       where: {
         file: {
@@ -140,6 +140,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       },
       select: {
         summary: true,
+        metadata: true,
         createdAt: true,
       },
     });
@@ -150,6 +151,8 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     let highIssues = 0;
     let mediumIssues = 0;
     let lowIssues = 0;
+    let totalTokens = 0;
+    let totalProcessingTime = 0;
 
     reviews.forEach((review: any) => {
       if (review.summary) {
@@ -158,6 +161,10 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         highIssues += review.summary.bySeverity?.high || 0;
         mediumIssues += review.summary.bySeverity?.medium || 0;
         lowIssues += review.summary.bySeverity?.low || 0;
+      }
+      if (review.metadata) {
+        totalTokens += review.metadata.tokensUsed || 0;
+        totalProcessingTime += review.metadata.processingTime || 0;
       }
     });
 
@@ -219,6 +226,12 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         highIssues,
         mediumIssues,
         lowIssues,
+        totalTokens,
+        avgTokensPerFile:
+          totalFiles > 0 ? Math.round(totalTokens / totalFiles) : 0,
+        totalProcessingTime,
+        avgProcessingTime:
+          totalReviews > 0 ? Math.round(totalProcessingTime / totalReviews) : 0,
         topProblematicFiles,
         recentReviews,
       },
