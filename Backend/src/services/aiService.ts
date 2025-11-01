@@ -251,9 +251,10 @@ ONLY check security vulnerabilities if code actually handles sensitive operation
           prompt: prompt,
           stream: false,
           options: {
-            temperature: 0.3,
-            top_p: 0.9,
+            temperature: 0.1,
+            top_p: 0.85,
             num_predict: 4000,
+            repeat_penalty: 1.1,
           },
         },
         {
@@ -734,14 +735,21 @@ IMPORTANT: Respond ONLY with plain text (no JSON, no markdown formatting).`;
         }
         
         // Enhanced validation for Java resource leaks (these are CRITICAL - keep them)
-        if ((title.includes('resource leak') || title.includes('not closed') || 
-             description.includes('resource leak') || description.includes('not closed')) &&
-            (title.includes('bufferedreader') || title.includes('bufferedwriter') || 
-             title.includes('scanner') || title.includes('filereader') || title.includes('filewriter') ||
-             description.includes('bufferedreader') || description.includes('bufferedwriter') ||
-             description.includes('scanner') || description.includes('filereader') || description.includes('filewriter'))) {
+        const hasResourceLeakKeywords = title.includes('resource') || title.includes('leak') || 
+                                        title.includes('not closed') || title.includes('close') ||
+                                        description.includes('resource') || description.includes('leak') || 
+                                        description.includes('not closed') || description.includes('close');
+        
+        const hasJavaResourceTypes = title.includes('bufferedreader') || title.includes('bufferedwriter') || 
+                                     title.includes('scanner') || title.includes('filereader') || 
+                                     title.includes('filewriter') || title.includes('reader') || title.includes('writer') ||
+                                     description.includes('bufferedreader') || description.includes('bufferedwriter') ||
+                                     description.includes('scanner') || description.includes('filereader') || 
+                                     description.includes('filewriter') || description.includes('reader') || description.includes('writer');
+        
+        if (hasResourceLeakKeywords && hasJavaResourceTypes) {
           // These are VALID and CRITICAL Java issues - ALWAYS keep them
-          console.log(`✅ Keeping CRITICAL Java resource leak issue at line ${issue.line}`);
+          console.log(`✅ Keeping CRITICAL Java resource leak issue at line ${issue.line}: "${issue.title}"`);
           return true;
         }
         

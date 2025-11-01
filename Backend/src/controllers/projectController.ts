@@ -29,7 +29,7 @@ export const createProject = async (req: Request, res: Response) => {
         repoUrl,
         guidelineIds: guidelineIds || null,
         customRules: customRules || null,
-      },
+      } as any,
     });
 
     res.status(201).json({
@@ -138,9 +138,9 @@ export const updateProject = async (req: Request, res: Response) => {
         name: name !== undefined ? name : existingProject.name,
         description: description !== undefined ? description : existingProject.description,
         repoUrl: repoUrl !== undefined ? repoUrl : existingProject.repoUrl,
-        guidelineIds: guidelineIds !== undefined ? guidelineIds : existingProject.guidelineIds,
-        customRules: customRules !== undefined ? customRules : existingProject.customRules,
-      },
+        guidelineIds: guidelineIds !== undefined ? guidelineIds : (existingProject as any).guidelineIds,
+        customRules: customRules !== undefined ? customRules : (existingProject as any).customRules,
+      } as any,
     });
 
     res.json({
